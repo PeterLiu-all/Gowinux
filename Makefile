@@ -42,3 +42,6 @@ clean:
 bochs: clean $(IMG) 
 	cd $(SRC)
 	bochs -q -f $(SRC)/bochsrc
+
+save: clean
+	if [[ -n $* ]]; then git commit -am "$*"; else git commit -am "`date`"; fi
