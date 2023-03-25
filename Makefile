@@ -44,4 +44,8 @@ bochs: clean $(IMG)
 	bochs -q -f $(SRC)/bochsrc
 
 save: clean
-	$(shell if [[ -n $* ]]; then git commit -am "$*"; else git commit -am "`date`"; fi)
+	@if [ -n "$(filter-out $@,$(MAKECMDGOALS))" ]; then \
+        git commit -am "$(filter-out $@,$(MAKECMDGOALS))"; \
+    else \
+        git commit -am "`date`"; \
+    fi
