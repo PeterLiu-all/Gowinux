@@ -208,12 +208,11 @@ read_disk:
 
 puts:
     ; xchg bx, bx
-    pop bx
-    pop si
-    push bx
+    show_str equ 4
     push bp
     mov bp, sp
     mov ah, 0xe
+    mov si, [bp+show_str]
     .next:
         mov al, [si]
         cmp al, 0
