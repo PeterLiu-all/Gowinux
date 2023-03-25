@@ -25,10 +25,10 @@ start:
     push 2
     push 0
     push 0x1000
-    xchg bx, bx
+    
     call read_disk
 
-    xchg bx, bx
+    
     cmp word [0x1000], 0x55aa
     jnz error
     jmp 0:0x1002
@@ -37,10 +37,10 @@ start:
     ; push 2
     ; push 0
     ; push 0x1000
-    ; ; xchg bx, bx
+    ; 
     ; call write_disk
 
-    xchg bx, bx
+    
 
     ; 阻塞
     .end:
@@ -71,13 +71,13 @@ read_disk:
         mov al, [bp+start_part+2]
         out dx, al
     .set_p6:
-    ; xchg bx, bx
+    
         inc dx
         mov al, [bp+start_part+3]
         and al, 0b1111
         or al, 0b1110_0000
         out dx, al
-    ; xchg bx, bx
+    
     .set_read_p7:
         inc dx
         mov al, 0x20
@@ -85,13 +85,13 @@ read_disk:
     .get_read_num:
         xor ecx, ecx
         mov cl, [bp+num_part]
-    ; xchg bx, bx
+    
     .read:
         push cx
         jmp .waits
         .waits_end:
         jmp .reads
-        ; xchg bx, bx
+        
         .reads_end:
         pop cx
         loop .read
@@ -115,16 +115,16 @@ read_disk:
         mov edi, [bp+dest_mem]
         .readw:
             in ax, dx
-            ; xchg bx, bx
+            
             jmp $+2
             jmp $+2
             jmp $+2
-            ; xchg bx, bx
+            
             mov [edi], ax
             add edi, 2
-            ; xchg bx, bx
+            
             loop .readw
-        ; xchg bx, bx
+        
         mov [bp+dest_mem], di
         jmp .reads_end
 
@@ -152,13 +152,13 @@ read_disk:
 ;         mov al, [bp+start_part+2]
 ;         out dx, al
 ;     .set_p6:
-;     ; xchg bx, bx
+
 ;         inc dx
 ;         mov al, [bp+start_part+3]
 ;         and al, 0b1111
 ;         or al, 0b1110_0000
 ;         out dx, al
-;     ; xchg bx, bx
+
 ;     .set_read_p7:
 ;         inc dx
 ;         mov al, 0x30
@@ -166,7 +166,7 @@ read_disk:
 ;     .get_read_num:
 ;         xor ecx, ecx
 ;         mov cl, [bp+num_part]
-;     ; xchg bx, bx
+
 ;     .write:
 ;         push ecx
 ;         jmp .waits
@@ -196,18 +196,18 @@ read_disk:
 ;         .writew:
 ;             mov ax, [edi]
 ;             out dx, ax
-;             ; xchg bx, bx
+
 ;             jmp $+2
 ;             jmp $+2
 ;             jmp $+2
-;             ; xchg bx, bx
+
 ;             add edi, 2
-;             ; xchg bx, bx
+
 ;             loop .writew
 ;         jmp .writes_end
 
 puts:
-    ; xchg bx, bx
+    
     show_str equ 4
     push bp
     mov bp, sp
@@ -218,11 +218,11 @@ puts:
         cmp al, 0
         jz .done
         int 0x10
-        ; xchg bx, bx
+        
         add si, 1
         jmp .next
     .done:
-        ; xchg bx, bx
+        
         leave
         ret
 

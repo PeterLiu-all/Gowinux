@@ -92,8 +92,8 @@ detecting:
     db "Detecting Memory Success...", 0xa, 0xd, 0; \n\r
 
 error:
-    mov si, .msg
-    call print
+    push .msg
+    call puts
     hlt; 让 CPU 停止
     jmp $
     .msg db "Loading Error!!!", 0xa, 0xd, 0
@@ -110,6 +110,7 @@ protect_mode:
 
     mov esp, 0x10000; 修改栈顶
 
+    mov byte [0xb8000], 'P'
     jmp $
 
 stack_start:
