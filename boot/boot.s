@@ -25,7 +25,6 @@ start:
     push 2
     push 0
     push 0x1000
-    
     call read_disk
 
     
