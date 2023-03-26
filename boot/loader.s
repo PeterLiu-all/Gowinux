@@ -114,7 +114,6 @@ protect_mode:
     mov ecx, 10
     mov bl, 200
     call read_disk
-    ; xchg bx, bx
 
     jmp dword code_selector:0x10000
 
