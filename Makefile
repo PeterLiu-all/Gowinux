@@ -95,7 +95,7 @@ qemug: $(IMG)
 
 # 导出为VMware的vmdk格式
 $(BUILD)/master.vmdk: $(IMG)
-	qemu-img convert -pO vmdk $< $@
+	qemu-img convert -O vmdk $< $@
 
 .PHONY: vmdk
 vmdk: $(BUILD)/master.vmdk

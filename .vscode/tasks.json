@@ -1,0 +1,49 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "make",
+            "command": "make",
+            "args": ["qemug"],
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": "^$"
+                },
+                "fileLocation": ["relative", "${workspaceFolder}/make_output.log"],
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^",
+                    "endsPattern": "$"
+                }
+            }
+        },
+        {
+            "type": "shell",
+            "label": "C/C++: gcc build active file",
+            "command": "/usr/bin/gcc",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-m32", // 32 位的程序
+                "-g",
+                "-I${workspaceFolder}/include",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "用于测试普通可执行程序"
+        }
+    ],
+    "version": "2.0.0"
+}

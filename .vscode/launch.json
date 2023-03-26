@@ -6,6 +6,7 @@
     "configurations": [
         {
             "name": "qemu gdb",
+            "preLaunchTask": "make",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/kernel.bin",
