@@ -240,10 +240,3 @@ stack_end:
 
 times 512 - ($ - $$) - 2 db 0
 dw 0xaa55
-; 编译
-; nasm -f bin boot.s -o boot.bin
-; 创建硬盘镜像
-; $PREFIX/bin/bximage -q -hd=16 -func=create -sectsize=512 -imgmode=flat master.img
-; ata0-master: type=disk, path="master.img", mode=flat
-; dd if=boot.bin of=master.img bs=512 count=1 conv=notrunc
-; sudo apt-get install libasound2-dev libpulse-dev libgbm1 libsdl2-2.0 libsdl2-dev

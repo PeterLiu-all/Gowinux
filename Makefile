@@ -5,14 +5,15 @@ IMG:=$(BUILD)/master.img
 CFLAGS:= -m32
 CFLAGS+= -ffreestanding
 CFLAGS+= -nostdlib
-# CFLAGS+= -nostdinc
+CFLAGS+= -nostdinc
 CFLAGS+= -nostartfiles
 CFLAGS+= -fno-builtin
 CFLAGS+= -fno-pic
 CFLAGS+= -fno-pie
 CFLAGS+= -fno-stack-protector
+CFLAGS+= -DGOWINUX
+CFLAGS+= -DGOWINUX_DEBUG
 CFLAGS+= -c
-CFLAGS+= -xc++
 # CFLAGS+= --verbose
 CFLAGS:=$(strip $(CFLAGS))
 
@@ -29,17 +30,31 @@ $(BUILD)/boot/%.bin: $(SRC)/boot/%.s
 # 汇编kernel的启动函数
 $(BUILD)/kernel/%.o: $(SRC)/kernel/%.s
 	$(shell mkdir -p $(dir $@))
-	nasm -f elf32 $(DEBUG) $< -o $@
+	nasm -f elf32 $(DEBUG) $< -o $@ -gdwarf
 
-# 编译主函数
+# 编译C/C++
 $(BUILD)/kernel/%.o: $(SRC)/kernel/%.cpp
 	$(shell mkdir -p $(dir $@))
-	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(DEBUG) $(INCLUDE) $< -o $@
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(DEBUG) $(INCLUDE) -xc++ $< -o $@
+
+$(BUILD)/kernel/%.o: $(SRC)/kernel/%.c
+	$(shell mkdir -p $(dir $@))
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(DEBUG) $(INCLUDE) -xc $< -o $@
+
+$(BUILD)/lib/%.o: $(SRC)/lib/%.cpp
+	$(shell mkdir -p $(dir $@))
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(DEBUG) $(INCLUDE) -xc++ $< -o $@
+
+$(BUILD)/lib/%.o: $(SRC)/lib/%.c
+	$(shell mkdir -p $(dir $@))
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(DEBUG) $(INCLUDE) -xc $< -o $@
 
 # 生成kernel
 $(BUILD)/kernel.bin: \
 		$(BUILD)/kernel/start.o \
-		$(BUILD)/kernel/main.o
+		$(BUILD)/kernel/main.o \
+		$(BUILD)/kernel/io.o \
+		$(BUILD)/lib/string.o
 	$(shell mkdir -p $(dir $@))
 	$(PREFIX)/bin/$(TARGET)-ld -m elf_i386 -static $^ -o $@ -Ttext $(ENTRYPOINT)
 
@@ -63,7 +78,7 @@ $(IMG): \
 	dd if=$(BUILD)/system.bin of=$@ bs=512 count=200 seek=10 conv=notrunc
 
 # 测试
-test: clean $(IMG) 
+test: clean $(IMG)
 
 # 清理
 .PHONY: clean

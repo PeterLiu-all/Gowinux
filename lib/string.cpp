@@ -1,0 +1,149 @@
+#include "lib/string.h"
+
+namespace std {
+char* strcpy(char* dest, const char* src)
+{
+    uint32 ptr = 0;
+    while (src[ptr] != '\0') {
+        dest[ptr] = src[ptr];
+        ptr++;
+    }
+    return dest;
+}
+char* strncpy(char* dest, const char* src, size_t count)
+{
+    uint32 ptr = 0;
+    size_t cur_cnt = 0;
+    while (src[ptr] != '\0' && cur_cnt < count) {
+        dest[ptr] = src[ptr];
+        ptr++;
+        cur_cnt++;
+    }
+    return dest;
+}
+char* strcat(char* dest, const char* src)
+{
+    size_t start = strlen(dest);
+    strcpy(dest + start, src);
+    return dest;
+}
+size_t strlen(const char* str)
+{
+    // 最后统计的字符不包括0
+    size_t length = 0;
+    while (str[length] != '\0') {
+        length++;
+    }
+    return length;
+}
+int strcmp(const char* lhs, const char* rhs)
+{
+    size_t curp = 0;
+    while (lhs[curp] == rhs[curp] && lhs[curp] != '\0' && rhs[curp] != '\0') {
+        curp++;
+    }
+    // lhs[curp] > rhs[curp]成立返回1，否则返回0
+    // lhs[curp] < rhs[curp]成立返回-1，否则返回0
+    // 都不成立返回0
+    return lhs[curp] < rhs[curp] ? -1 : lhs[curp] > rhs[curp];
+}
+char* strchr(const char* str, int ch){
+    size_t curp = 0;
+    while (str[curp] != '\0') {
+        if (str[curp] == ch)
+        {
+            return (char*)(str + curp);
+        }
+    }
+    return nullptr;
+}
+char* strrchr(const char* str, int ch){
+    size_t curp = 0;
+    char* last = nullptr;
+    while (str[curp] != '\0') {
+        if (str[curp] == ch)
+        {
+            last = (char*)(str + curp);
+        }
+        curp++;
+    }
+    return last;
+}
+
+int memcmp(const void* lhs, const void* rhs, size_t count){
+    char *lptr = (char *)lhs;
+    char *rptr = (char *)rhs;
+    while ((count > 0) && *lptr == *rptr)
+    {
+        lptr++;
+        rptr++;
+        count--;
+    }
+    if (count == 0)
+        return 0;
+    return *lptr < *rptr ? -1 : *lptr > *rptr;
+}
+void* memset(void* dest, int ch, size_t count){
+    for(int i = 0; i < count; i++)
+    {
+        ((char*)dest)[i] = ch;
+    }
+    return dest;
+}
+void* memcpy(void* dest, const void* src, size_t count){
+    for(int i = 0; i < count; i++)
+    {
+        ((char*)dest)[i] = ((char*)src)[i];
+    }
+    return dest;
+}
+void* memchr(const void* str, int ch, size_t count){
+    for(int i = 0; i < count; i++)
+    {
+        if (((char*)str)[i] == ch)
+        {
+            return (char*)str + i;
+        }
+    }
+    return nullptr;
+}
+
+#define SEPARATOR1 '/'                                       // 目录分隔符 1
+#define SEPARATOR2 '\\'                                      // 目录分隔符 2
+#define IS_SEPARATOR(c) (c == SEPARATOR1 || c == SEPARATOR2) // 字符是否位目录分隔符
+
+// 获取第一个分隔符
+char *strsep(const char *str)
+{
+    char *ptr = (char *)str;
+    while (true)
+    {
+        if (IS_SEPARATOR(*ptr))
+        {
+            return ptr;
+        }
+        if (*ptr++ == '\0')
+        {
+            return NULL;
+        }
+    }
+}
+
+// 获取最后一个分隔符
+char *strrsep(const char *str)
+{
+    char *last = NULL;
+    char *ptr = (char *)str;
+    while (true)
+    {
+        if (IS_SEPARATOR(*ptr))
+        {
+            last = ptr;
+        }
+        if (*ptr++ == '\0')
+        {
+            return last;
+        }
+    }
+}
+}

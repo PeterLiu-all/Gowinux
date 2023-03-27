@@ -4,7 +4,5 @@ extern kernel_init
 
 global _start
 _start:
-    ; mov byte [0xb8000], 'K'
-    ; xchg bx, bx
     call kernel_init
     jmp $ ; 阻塞
