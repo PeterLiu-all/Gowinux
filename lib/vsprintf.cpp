@@ -3,6 +3,8 @@
  * Wirzenius wrote this portably, Torvalds fucked it up :-)
  */
 
+// Linux内核中的源码
+
 #include <lib/stdarg.h>
 #include <lib/stdio.h>
 #include <lib/string.h>
