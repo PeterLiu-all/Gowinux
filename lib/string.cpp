@@ -4,7 +4,7 @@ namespace std {
 char* strcpy(char* dest, const char* src)
 {
     uint32 ptr = 0;
-    while (src[ptr] != '\0') {
+    while (src[ptr] != EOS) {
         dest[ptr] = src[ptr];
         ptr++;
     }
@@ -14,7 +14,7 @@ char* strncpy(char* dest, const char* src, size_t count)
 {
     uint32 ptr = 0;
     size_t cur_cnt = 0;
-    while (src[ptr] != '\0' && cur_cnt < count) {
+    while (src[ptr] != EOS && cur_cnt < count) {
         dest[ptr] = src[ptr];
         ptr++;
         cur_cnt++;
@@ -31,7 +31,7 @@ size_t strlen(const char* str)
 {
     // 最后统计的字符不包括0
     size_t length = 0;
-    while (str[length] != '\0') {
+    while (str[length] != EOS) {
         length++;
     }
     return length;
@@ -39,7 +39,7 @@ size_t strlen(const char* str)
 int strcmp(const char* lhs, const char* rhs)
 {
     size_t curp = 0;
-    while (lhs[curp] == rhs[curp] && lhs[curp] != '\0' && rhs[curp] != '\0') {
+    while (lhs[curp] == rhs[curp] && lhs[curp] != EOS && rhs[curp] != EOS) {
         curp++;
     }
     // lhs[curp] > rhs[curp]成立返回1，否则返回0
@@ -49,7 +49,7 @@ int strcmp(const char* lhs, const char* rhs)
 }
 char* strchr(const char* str, int ch){
     size_t curp = 0;
-    while (str[curp] != '\0') {
+    while (str[curp] != EOS) {
         if (str[curp] == ch)
         {
             return (char*)(str + curp);
@@ -60,7 +60,7 @@ char* strchr(const char* str, int ch){
 char* strrchr(const char* str, int ch){
     size_t curp = 0;
     char* last = nullptr;
-    while (str[curp] != '\0') {
+    while (str[curp] != EOS) {
         if (str[curp] == ch)
         {
             last = (char*)(str + curp);
@@ -122,9 +122,9 @@ char *strsep(const char *str)
         {
             return ptr;
         }
-        if (*ptr++ == '\0')
+        if (*ptr++ == EOS)
         {
-            return NULL;
+            return nullptr;
         }
     }
 }
@@ -132,7 +132,7 @@ char *strsep(const char *str)
 // 获取最后一个分隔符
 char *strrsep(const char *str)
 {
-    char *last = NULL;
+    char *last = nullptr;
     char *ptr = (char *)str;
     while (true)
     {
@@ -140,7 +140,7 @@ char *strrsep(const char *str)
         {
             last = ptr;
         }
-        if (*ptr++ == '\0')
+        if (*ptr++ == EOS)
         {
             return last;
         }

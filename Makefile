@@ -54,6 +54,7 @@ $(BUILD)/kernel.bin: \
 		$(BUILD)/kernel/start.o \
 		$(BUILD)/kernel/main.o \
 		$(BUILD)/kernel/io.o \
+		$(BUILD)/kernel/console.o \
 		$(BUILD)/lib/string.o
 	$(shell mkdir -p $(dir $@))
 	$(PREFIX)/bin/$(TARGET)-ld -m elf_i386 -static $^ -o $@ -Ttext $(ENTRYPOINT)

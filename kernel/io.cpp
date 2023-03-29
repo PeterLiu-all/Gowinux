@@ -47,8 +47,4 @@ void outw(u16 port, u16 value)
         : "edx", "memory"
         );
 }
-
-void puts(const char* show_str)
-{
-}
 }
