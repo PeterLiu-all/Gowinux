@@ -1,6 +1,6 @@
 #!/bin/bash
 
-make clean
+# make clean
 git add .
 if [[ -n $* ]]; then
     git commit -m "$*"

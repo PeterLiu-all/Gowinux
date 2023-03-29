@@ -4,20 +4,25 @@
  */
 
 // Linux内核中的源码
+#include "Gowinux/types.h"
+#include "lib/stdarg.h"
+#include "lib/stdio.h"
+#include "lib/string.h"
 
-#include <lib/stdarg.h>
-#include <lib/stdio.h>
-#include <lib/string.h>
+#define LARGE_LETTER_LIST "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+#define SMALL_LETTER_LIST "0123456789abcdefghijklmnopqrstuvwxyz"
 
-#define ZEROPAD 1  // 填充零
-#define SIGN 2     // unsigned/signed long
-#define PLUS 4     // 显示加
-#define SPACE 8    // 如是加，则置空格
-#define LEFT 16    // 左调整
-#define SPECIAL 32 // 0x
-#define SMALL 64   // 使用小写字母
+constexpr static const u8 ZEROPAD = 1; // 填充零
+constexpr static const u8 SIGN = 2;     // unsigned/signed long
+constexpr static const u8 PLUS = 4;     // 显示加
+constexpr static const u8 SPACE = 8;    // 如是加，则置空格
+constexpr static const u8 LEFT = 16;    // 左调整
+constexpr static const u8 SPECIAL = 32; // 0x
+constexpr static const u8 SMALL = 64;   // 使用小写字母
 
-#define is_digit(c) ((c) >= '0' && (c) <= '9')
+inline bool is_digit(char c){ 
+    return c >= '0' && c <= '9';
+}
 
 using namespace std;
 // 将字符数字串转换成整数，并将指针前移
@@ -39,14 +44,14 @@ static int skip_atoi(const char **s)
 static char *number(char *str, unsigned long num, int base, int size, int precision, int flags)
 {
     char c, sign, tmp[36];
-    const char *digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const char *digits = LARGE_LETTER_LIST;
     int i;
     int index;
     char *ptr = str;
 
     // 如果 flags 指出用小写字母，则定义小写字母集
     if (flags & SMALL)
-        digits = "0123456789abcdefghijklmnopqrstuvwxyz";
+        digits = SMALL_LETTER_LIST;
 
     // 如果 flags 指出要左对齐，则屏蔽类型中的填零标志
     if (flags & LEFT)
@@ -184,7 +189,8 @@ int vsprintf(char *buf, const char *fmt, va_list args)
 
         // 下面取得格式指示字符串中的标志域，并将标志常量放入 flags 变量中
         flags = 0;
-    repeat:
+        bool repeat_flag = true;
+    while(repeat_flag){
         // 掉过第一个 %
         ++fmt;
         switch (*fmt)
@@ -192,25 +198,28 @@ int vsprintf(char *buf, const char *fmt, va_list args)
         // 左对齐调整
         case '-':
             flags |= LEFT;
-            goto repeat;
+            break;
         // 放加号
         case '+':
             flags |= PLUS;
-            goto repeat;
+            break;
         // 放空格
         case ' ':
             flags |= SPACE;
-            goto repeat;
+            break;
         // 是特殊转换
         case '#':
             flags |= SPECIAL;
-            goto repeat;
+            break;
         // 要填零(即'0')，否则是空格
         case '0':
             flags |= ZEROPAD;
-            goto repeat;
+            break;
+        default:
+            repeat_flag = false;
+            break;
         }
-
+}
         // 取当前参数字段宽度域值，放入 field_width 变量中
         field_width = -1;
 

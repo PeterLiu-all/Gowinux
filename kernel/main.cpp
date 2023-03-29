@@ -21,6 +21,6 @@ void kernel_init()
     console.console_write(message, sizeof(message) - 1);
     console.recover_style();
     console.console_write(message, sizeof(message) - 1);
-    printk("Gowinux is No.%d!\n", 1);
+    printk("Gowinux is No.%1d!\n", 1);
     return;
 }
