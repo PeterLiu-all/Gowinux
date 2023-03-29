@@ -32,8 +32,7 @@ void outb(u16 port, u8 value)
         "out %%al, %%dx"
         :
         : "r"(port), "r"(value)
-        : "edx", "memory"
-        );
+        : "edx", "memory");
 }
 
 void outw(u16 port, u16 value)
@@ -44,7 +43,6 @@ void outw(u16 port, u16 value)
         "out %%ax, %%dx"
         :
         : "r"(port), "r"(value)
-        : "edx", "memory"
-        );
+        : "edx", "memory");
 }
 }

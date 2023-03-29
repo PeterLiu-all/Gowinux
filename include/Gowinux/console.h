@@ -36,27 +36,49 @@ constexpr static u8 DEL = 0x7F;
 constexpr static u8 STYLE = 7;
 constexpr static u8 BLINK = 0x80;
 constexpr static u8 BOLD = 0x0F;
-constexpr static u8 UNDER = 0X0F;
+constexpr static u8 UNDER = 0x0F;
 
 constexpr static u16 ERASE = 0x0720;
 constexpr static u8 ARG_NR = 16;
 
-enum class style : u32 {
-    ST_NORMAL = 0,
-    ST_BOLD = 1,
-    ST_BLINK = 5,
-    ST_REVERSE = 7,
-};
+constexpr static u8 TAB_SIZE = 8;
 
 enum class color : u32 {
-    BLACK = 0,
-    BLUE = 1,
-    GREEN = 2,
-    CYAN = 3,
-    RED = 4,
-    MAGENTA = 5,
-    YELLOW = 6,
-    WHITE = 7,
+    black = 0,
+    blue = 1,
+    green = 2,
+    cyan = 3,
+    red = 4,
+    purple = 5,
+    orange = 6,
+    white = 7,
+    gray = 8,
+
+    bright_blue = 9,
+    bright_green = 0xA,
+    bright_cyan = 0xB,
+    bright_red = 0xC,
+    bright_purple = 0xD,
+    bright_orange = 0xE,
+    bright_white = 0xF,
+
+    black_back = 0x00,
+    blue_back = 0x10,
+    green_back = 0x20,
+    cyan_back = 0x30,
+    red_back = 0x40,
+    purple_back = 0x50,
+    orange_back = 0x60,
+    white_back = 0x70,
+
+    gray_back = 0x80,
+    bright_blue_back = 0x90,
+    bright_green_back = 0xA0,
+    bright_cyan_back = 0xB0,
+    bright_red_back = 0xC0,
+    bright_purple_back = 0xD0,
+    bright_orange_back = 0xE0,
+    bright_white_back = 0xF0,
 };
 
 enum class state : u32
@@ -83,6 +105,10 @@ public:
     void console_init();
     // 写入一段字符串
     void console_write(char* buf, u32 count);
+    void set_style(u32 stl){ this->style = stl; }
+    u32 get_style(){ return this->style; }
+    void recover_style(){ this->style = STYLE; }
+    void console_putchar(char ch);
 private:
     // 私有方法
     console_t() = default;
@@ -93,7 +119,6 @@ private:
     void set_screen(); // 设置当前显示器开始的位置
     void get_cursor(); // 获得当前光标开始的位置
     void set_cursor(); // 设置当前光标开始的位置
-    void console_putchar(char ch);
     void erase_screen();
     void command_bel(); // \a
     void command_bs(); // \b
@@ -105,6 +130,7 @@ private:
     void command_ff(); // \f
     void command_cr(); // \r
     void command_del(); // 0x7f
+    inline void save_cursor(); // 保存旧的cursor
     // 静态变量
     static console_t console;
     // 成员变量

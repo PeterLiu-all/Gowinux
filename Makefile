@@ -55,7 +55,9 @@ $(BUILD)/kernel.bin: \
 		$(BUILD)/kernel/main.o \
 		$(BUILD)/kernel/io.o \
 		$(BUILD)/kernel/console.o \
-		$(BUILD)/lib/string.o
+		$(BUILD)/lib/string.o \
+		$(BUILD)/lib/printk.o \
+		$(BUILD)/lib/vsprintf.o
 	$(shell mkdir -p $(dir $@))
 	$(PREFIX)/bin/$(TARGET)-ld -m elf_i386 -static $^ -o $@ -Ttext $(ENTRYPOINT)
 
