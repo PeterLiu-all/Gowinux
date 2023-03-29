@@ -74,15 +74,14 @@ public:
     static console_t* getInstance(){
         return &console;
     }
-    static console_t* getInitInstance(){
-        console.console_init();
-        return &console;
-    }
     // static void deleteInstance(){
     //     delete &console;
     // }
+    // 清空屏幕并重置光标
     void console_clear();
+    // 初始化一些参数
     void console_init();
+    // 写入一段字符串
     void console_write(char* buf, u32 count);
 private:
     // 私有方法
@@ -94,6 +93,18 @@ private:
     void set_screen(); // 设置当前显示器开始的位置
     void get_cursor(); // 获得当前光标开始的位置
     void set_cursor(); // 设置当前光标开始的位置
+    void console_putchar(char ch);
+    void erase_screen();
+    void command_bel(); // \a
+    void command_bs(); // \b
+    void command_ht(); // \t
+    void command_lf(); // \n
+    void scroll_up(); // 向上滚一行
+    void scroll_down(); // 向下滚动一行
+    void command_vt(); // \v
+    void command_ff(); // \f
+    void command_cr(); // \r
+    void command_del(); // 0x7f
     // 静态变量
     static console_t console;
     // 成员变量
