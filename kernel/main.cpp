@@ -4,6 +4,8 @@
 #include "Gowinux/types.h"
 #include "lib/string.h"
 #include "lib/printk.h"
+#include "lib/assert.h"
+#include "lib/log.h"
 static const int magic = GOWINUX_MAGIC;
 static char message[] = "Hello,\vGowinux!\n"; // .data
 static char buf[1024] = { 0 }; // .bss
@@ -22,5 +24,6 @@ void kernel_init()
     console.recover_style();
     console.console_write(message, sizeof(message) - 1);
     printk("Gowinux is No.%1d!\n", 1);
+    INFO("I'm logging!\n");
     return;
 }
