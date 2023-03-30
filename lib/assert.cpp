@@ -16,7 +16,7 @@ static void spin(const char *name)
     // :
     // : "memory"
     // );
-    asm volatile (
+    __asm__ volatile (
         ".spin_stop_now_%=:\n\t"
         "hlt\n\t"
         "pause\n\t"
