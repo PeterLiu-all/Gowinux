@@ -1,7 +1,10 @@
 #ifndef __LIB_LOG_H__
 #define __LIB_LOG_H__
 
+#ifdef __cplusplus
 extern "C" {
+#endif // __cplusplus
+
 void _normal_log(
     const char* level,
     const char* message,
@@ -9,7 +12,15 @@ void _normal_log(
     const char* base,
     const char* func,
     unsigned int line);
+
+#ifdef __cplusplus
 }
+#endif // __cplusplus
+
+#ifndef __cplusplus
+#define __PRETTY_FUNCTION__ __FUNCTION__
+#endif // __cplusplus
+
 #define INFO(msg) _normal_log("INFO", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__)
 #ifdef GOWINUX_DEBUG
 #define DEBUG(msg) _normal_log("DEBUG", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__)

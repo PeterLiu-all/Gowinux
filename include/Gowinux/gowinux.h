@@ -3,7 +3,13 @@
 
 #define GOWINUX_MAGIC 0x474C5450 // PTLG
 
-extern "C"{
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
     void kernel_init();
+
+#ifdef __cplusplus
 }
+#endif // __cplusplus
 #endif /* __GOWINUX_GOWINUX_H__ */

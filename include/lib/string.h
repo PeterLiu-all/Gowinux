@@ -1,8 +1,11 @@
 #ifndef __LIB_STRING_H__
 #define __LIB_STRING_H__
+#include "lib/memory.h"
 #include "lib/stack.h"
 #include <Gowinux/types.h>
+#ifdef __cplusplus
 extern "C" {
+#endif // __cplusplus
 char* strcpy(char* dest, const char* src);
 char* strncpy(char* dest, const char* src, size_t count);
 char* strcat(char* dest, const char* src);
@@ -13,53 +16,23 @@ char* strrchr(const char* str, int ch);
 char* strsep(const char* str);
 char* strrsep(const char* str);
 
-int memcmp(const void* lhs, const void* rhs, size_t count);
-void* memset(void* dest, int ch, size_t count);
-void* memcpy(void* dest, const void* src, size_t count);
-void* memchr(const void* str, int ch, size_t count);
-}
+char* itoa(const int num, char* store, const int radix);
+char* ltoa(const long num, char* store, const int radix);
+// char* lltoa(const long long num, char* store, const int radix);
+char* uitoa(const unsigned int num, char* store, const int radix);
+char* ultoa(const unsigned long num, char* store, const int radix);
+// char* ulltoa(const unsigned long long num, char* store, const int radix);
 
-namespace std{
-template <typename NT>
-char* itoa(const NT num, char* store, const unsigned int radix)
-{
-    char stack[21] = { '\0' };
-    char* esp = stack;
-    char sym_table[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    NT abs_val = 0;
-    unsigned int curp = 0;
-    if (radix == 10 && num < 0) {
-        abs_val = -num;
-        store[curp++] = '-';
-    }
-    do {
-        push(&esp, sym_table[abs_val % radix]);
-        abs_val /= radix;
-    } while (abs_val);
-    while (esp != stack) {
-        store[curp++] = pop(&esp);
-    }
-    store[curp] = '\0';
-    return store;
+inline bool isspace(char ch) { return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\f' || ch == '\b' || ch == '\r'; }
+inline bool isdigit(char ch) { return ch >= '0' && ch <= '9'; }
+inline bool isalpha(char ch) { return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'); }
+inline bool ispunct(char ch) { return (ch >= '!' && ch <= '/') || (ch >= ':' && ch <= '@') || (ch >= '[' && ch <= '`') || (ch >= '{' && ch <= '~'); }
+inline bool isprint(char ch) { return ch >= 32 && ch <= 126; }
+inline bool isnull(char ch) { return ch == 0; }
+inline bool isdel(char ch) { return ch == 0x7F; }
+inline bool isbreak(char ch) { return ch == '\n'; }
+#ifdef __cplusplus
 }
-
-template <typename NT>
-char* itoa(const NT num, char* store, const unsigned int radix, bool)
-{
-    char stack[21] = { '\0' };
-    char* esp = stack;
-    char sym_table[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    unsigned int curp = 0;
-    do {
-        push(&esp, sym_table[num % radix]);
-        num /= radix;
-    } while (num);
-    while (esp != stack) {
-        store[curp++] = pop(&esp);
-    }
-    store[curp] = '\0';
-    return store;
-}
-}
+#endif // __cplusplus
 
 #endif /* __LIB_STRING_H__ */

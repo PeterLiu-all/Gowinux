@@ -1,10 +1,16 @@
 #ifndef __LIB_ASSERT_H__
 #define __LIB_ASSERT_H__
 
+#ifdef __cplusplus
 extern "C" {
+#endif // __cplusplus
+
 void assert_failed(const char *exp, const char *file, const char *base, const char* func, unsigned int line);
 void panic(const char* fmt, ...);
+
+#ifdef __cplusplus
 }
+#endif // __cplusplus
 
 #define assert(exp)                                                 \
     do {                                                            \

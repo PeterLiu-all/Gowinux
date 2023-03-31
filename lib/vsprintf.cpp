@@ -20,15 +20,11 @@ constexpr static const u8 LEFT = 16;    // 左调整
 constexpr static const u8 SPECIAL = 32; // 0x
 constexpr static const u8 SMALL = 64;   // 使用小写字母
 
-inline bool is_digit(char c){ 
-    return c >= '0' && c <= '9';
-}
-
 // 将字符数字串转换成整数，并将指针前移
 static int skip_atoi(const char **s)
 {
     int i = 0;
-    while (is_digit(**s))
+    while (isdigit(**s))
         i = i * 10 + *((*s)++) - '0';
     return i;
 }
@@ -223,7 +219,7 @@ int vsprintf(char *buf, const char *fmt, va_list args)
         field_width = -1;
 
         // 如果宽度域中是数值则直接取其为宽度值
-        if (is_digit(*fmt))
+        if (isdigit(*fmt))
             field_width = skip_atoi(&fmt);
 
         // 如果宽度域中是字符 '*'，表示下一个参数指定宽度
@@ -250,7 +246,7 @@ int vsprintf(char *buf, const char *fmt, va_list args)
         {
             ++fmt;
             // 如果精度域中是数值则直接取其为精度值
-            if (is_digit(*fmt))
+            if (isdigit(*fmt))
                 precision = skip_atoi(&fmt);
 
             // 如果精度域中是字符'*'，表示下一个参数指定精度

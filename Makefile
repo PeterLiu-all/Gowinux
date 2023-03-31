@@ -7,7 +7,7 @@ STRIP:= -s
 CFLAGS:= -m32
 CFLAGS+= -ffreestanding
 CFLAGS+= -nostdlib
-CFLAGS+= -nostdinc
+# CFLAGS+= -nostdinc
 CFLAGS+= -nostartfiles
 CFLAGS+= -fno-builtin
 CFLAGS+= -fno-pic
@@ -15,7 +15,7 @@ CFLAGS+= -fno-pie
 CFLAGS+= -fno-stack-protector
 CFLAGS+=$(DEBUG)
 # CFLAGS+=$(STRIP)
-CFLAGS+= -O2
+# CFLAGS+= -O2
 CFLAGS+= -DGOWINUX
 CFLAGS+= -DGOWINUX_DEBUG
 CFLAGS+= -c
@@ -40,19 +40,19 @@ $(BUILD)/kernel/%.o: $(SRC)/kernel/%.s
 # 编译C/C++
 $(BUILD)/kernel/%.o: $(SRC)/kernel/%.cpp
 	$(shell mkdir -p $(dir $@))
-	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -xc++ $< -o $@
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -x c++ $< -o $@
 
 $(BUILD)/kernel/%.o: $(SRC)/kernel/%.c
 	$(shell mkdir -p $(dir $@))
-	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -xc $< -o $@
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -x c $< -o $@
 
 $(BUILD)/lib/%.o: $(SRC)/lib/%.cpp
 	$(shell mkdir -p $(dir $@))
-	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -xc++ $< -o $@
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -x c++ $< -o $@
 
 $(BUILD)/lib/%.o: $(SRC)/lib/%.c
 	$(shell mkdir -p $(dir $@))
-	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -xc $< -o $@
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -x c $< -o $@
 
 # 生成kernel
 $(BUILD)/kernel.bin: \

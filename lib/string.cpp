@@ -1,4 +1,5 @@
 #include "lib/string.h"
+#include "lib/log.h"
 
 // namespace std {
 char* strcpy(char* dest, const char* src)
@@ -147,3 +148,64 @@ char *strrsep(const char *str)
     }
 }
 // }
+
+char* itoa(const int num, char* store, const int radix){
+    if (radix > 0 && radix < 17)
+    {
+        return ltoa(num, store, radix);
+    }else
+    {
+        ERROR("radix unknown!");
+        return store;
+    }
+    
+}
+
+char* ltoa(const long num, char* store, const int radix){
+    char stack[21] = { '\0' };
+    char* esp = stack;
+    char sym_table[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    long abs_val = num;
+    unsigned int curp = 0;
+    if (radix == 10 && num < 0) {
+        abs_val = -num;
+        store[curp++] = '-';
+    }
+    do {
+        push(&esp, sym_table[abs_val % radix]);
+        abs_val /= radix;
+    } while (abs_val);
+    while (esp != stack) {
+        store[curp++] = pop(&esp);
+    }
+    store[curp] = '\0';
+    return store;
+}
+
+char* uitoa(const unsigned int num, char* store, const int radix){
+    if (radix > 0 && radix < 17)
+    {
+        return ultoa(num, store, radix);
+    }else
+    {
+        ERROR("radix unknown!");
+        return store;
+    }
+}
+
+char* ultoa(const unsigned long num, char* store, const int radix){
+    char stack[21] = { '\0' };
+    char* esp = stack;
+    char sym_table[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    unsigned int curp = 0;
+    unsigned long abs_val = num;
+    do {
+        push(&esp, sym_table[abs_val % radix]);
+        abs_val /= radix;
+    } while (abs_val);
+    while (esp != stack) {
+        store[curp++] = pop(&esp);
+    }
+    store[curp] = '\0';
+    return store;
+}
