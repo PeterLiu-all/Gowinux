@@ -1,6 +1,6 @@
 #include "lib/string.h"
 
-namespace std {
+// namespace std {
 char* strcpy(char* dest, const char* src)
 {
     uint32 ptr = 0;
@@ -146,4 +146,4 @@ char *strrsep(const char *str)
         }
     }
 }
-}
+// }

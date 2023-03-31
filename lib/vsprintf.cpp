@@ -24,7 +24,6 @@ inline bool is_digit(char c){
     return c >= '0' && c <= '9';
 }
 
-using namespace std;
 // 将字符数字串转换成整数，并将指针前移
 static int skip_atoi(const char **s)
 {

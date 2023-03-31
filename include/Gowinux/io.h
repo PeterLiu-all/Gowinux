@@ -3,7 +3,7 @@
 
 #include "Gowinux/types.h"
 
-namespace std{
+extern "C"{
     // constexpr static u16 CRT_ADDR_REG = 0X3D4;
     // constexpr static u16 CRT_DATA_REG = 0X3D5;
     // constexpr static u8 CRT_CURSOR_H = 0XE;

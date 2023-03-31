@@ -2,7 +2,7 @@
 #define __LIB_STRING_H__
 #include "lib/stack.h"
 #include <Gowinux/types.h>
-namespace std {
+extern "C" {
 char* strcpy(char* dest, const char* src);
 char* strncpy(char* dest, const char* src, size_t count);
 char* strcat(char* dest, const char* src);
@@ -17,7 +17,9 @@ int memcmp(const void* lhs, const void* rhs, size_t count);
 void* memset(void* dest, int ch, size_t count);
 void* memcpy(void* dest, const void* src, size_t count);
 void* memchr(const void* str, int ch, size_t count);
+}
 
+namespace std{
 template <typename NT>
 char* itoa(const NT num, char* store, const unsigned int radix)
 {

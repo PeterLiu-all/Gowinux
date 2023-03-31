@@ -16,13 +16,20 @@ static void spin(const char *name)
     // :
     // : "memory"
     // );
-    __asm__ volatile (
-        ".spin_stop_now_%=:\n\t"
+    // __asm__ volatile (
+    //     ".spin_stop_now_%=:\n\t"
+    //     "hlt\n\t"
+    //     "pause\n\t"
+    //     "jmp .spin_stop_now_%="
+    //     : : : "memory"
+    // );
+    while (true){
+        __asm__ volatile (
         "hlt\n\t"
         "pause\n\t"
-        "jmp .spin_stop_now_%="
         : : : "memory"
-    );
+        );
+    }
     printk("\nspin function error: reach an unbeliveable point...\n");
     // 不可能到达这里，否则使用汇编判错
     __asm__ volatile(

@@ -19,10 +19,11 @@ CFLAGS+= -O2
 CFLAGS+= -DGOWINUX
 CFLAGS+= -DGOWINUX_DEBUG
 CFLAGS+= -c
+CFLAGS+= -fvisibility=hidden
 # CFLAGS+= --verbose
 CFLAGS:=$(strip $(CFLAGS))
 
-INCLUDE:= -I$(SRC)/include
+INCLUDE:= -I$(SRC)/include -I$(SRC)
 
 ENTRYPOINT:=0x10000
 
@@ -59,6 +60,7 @@ $(BUILD)/kernel.bin: \
 		$(BUILD)/kernel/main.o \
 		$(BUILD)/kernel/io.o \
 		$(BUILD)/kernel/console.o \
+		$(BUILD)/kernel/gdt.o \
 		$(BUILD)/lib/string.o \
 		$(BUILD)/lib/printk.o \
 		$(BUILD)/lib/assert.o \

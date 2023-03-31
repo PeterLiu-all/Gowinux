@@ -11,7 +11,11 @@ void _normal_log(
     unsigned int line);
 }
 #define INFO(msg) _normal_log("INFO", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__)
+#ifdef GOWINUX_DEBUG
 #define DEBUG(msg) _normal_log("DEBUG", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__)
+#else
+#define DEBUG(msg) 
+#endif
 #define ERROR(msg) _normal_log("ERROR", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__)
 #define WARNING(msg) _normal_log("WARNING", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__)
 

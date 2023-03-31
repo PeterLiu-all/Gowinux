@@ -14,9 +14,7 @@ int printk(const char* fmt, ...){
 
     va_end(args);
 
-    std::console_t* console = std::console_t::getInstance();
-    console->console_write(buf, cnt);
-    console = nullptr;
+    console_write(buf, cnt);
 
     return cnt;
 }
