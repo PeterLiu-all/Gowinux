@@ -14,25 +14,25 @@
 // static const int magic = GOWINUX_MAGIC;
 static char message[] = "Hello,\t\vGowinux!\n"; // .data
 static char buf[1024] = { 0 }; // .bss
-static size_t cnta = 1;
-static size_t cntb = 1;
+static size_t cnta = 4;
+static size_t cntb = 5;
 
 
-void task_a(){
+void task_a(task_frame_t* frame){
     // set_style(RED | GRAY_BACK);
-    printk("A");
     if (cnta--)
     {
+        printk(itoa(frame->ebp, buf, 16));
         task_hang();
     }
     
 }
 
-void task_b(){
+void task_b(task_frame_t* frame){
     // recover_style();
-    printk("B");
     if (cntb--)
     {
+        printk(itoa(frame->edi, buf, 16));
         task_hang();
     }
 }
@@ -49,8 +49,8 @@ void kernel_init()
     //     console.console_write(message, sizeof(message) - 1);
     // }
     
-    task_t tsk1 = task_create("A", 0x111, task_a, 0, 0, 0, 0);
-    task_t tsk2 = task_create("B", 0x111, task_b, 0, 0, 0, 0);
+    task_t tsk1 = task_create("A", 0x111, task_a, 0xfff, 0, 0, 0);
+    task_t tsk2 = task_create("B", 0x111, task_b, 0xfff, 0, 0, 0);
     task_start(&tsk1);
     task_end(&tsk1);
     task_end(&tsk2);

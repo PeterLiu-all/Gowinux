@@ -13,8 +13,9 @@ extern "C" {
 #endif // __cplusplus
 typedef struct task_frame_t {
     size_t name;
-    size_t ebp;
+    size_t ebp; // ebp用于传递更多的参数！使用的时候可以强制转换为结构体或者数组的指针！
     size_t eip;
+    // 下面四个是直接传递的参数
     size_t edi;
     size_t esi;
     size_t edx;
@@ -29,12 +30,18 @@ typedef struct task_t {
     };
 }task_t;
 
+#ifdef __cplusplus
+using TASK_FUNC_TYPE = void (*)(task_frame_t*);
+#else
+typedef void(*TASK_FUNC_TYPE)(task_frame_t*);
+#endif // __cplusplus
+
 // 初始化task
 void task_init();
 // 创建一个task
 task_t task_create(size_t name,
     size_t ebp,
-    size_t eip,
+    TASK_FUNC_TYPE eip,
     size_t edi,
     size_t esi,
     size_t edx,

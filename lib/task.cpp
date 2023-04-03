@@ -51,7 +51,7 @@ void task_init()
 task_t task_create(
     size_t name,
     size_t ebp,
-    size_t eip,
+    TASK_FUNC_TYPE eip,
     size_t edi,
     size_t esi,
     size_t edx,
@@ -65,7 +65,7 @@ task_t task_create(
     }
     task.frame->name = name;
     task.frame->ebp = ebp;
-    task.frame->eip = eip;
+    task.frame->eip = (size_t)eip;
     task.frame->edi = edi;
     task.frame->esi = esi;
     task.frame->edx = edx;
@@ -77,11 +77,12 @@ task_t task_create(
 void task_hang()
 {
     switch_task();
-    __asm__ volatile(
-        "call %%eax\n\t"
-        :
-        : "a"(((task_frame_t*)cur_task)->eip)
-        : "memory");
+    // __asm__ volatile(
+    //     "call %%eax\n\t"
+    //     :
+    //     : "a"(((task_frame_t*)cur_task)->eip)
+    //     : "memory");
+    (*(TASK_FUNC_TYPE)(((task_frame_t*)cur_task)->eip))((task_frame_t*)cur_task);
 }
 // 结束任务
 void task_end(task_t* task){
@@ -90,11 +91,12 @@ void task_end(task_t* task){
 
 void task_start(task_t* task){
     cur_task = task->esp;
-    __asm__ volatile(
-        "call %%eax\n\t"
-        :
-        : "a"(((task_frame_t*)cur_task)->eip)
-        : "memory");
+    // __asm__ volatile(
+    //     "call %%eax\n\t"
+    //     :
+    //     : "a"(((task_frame_t*)cur_task)->eip)
+    //     : "memory");
+    (*(TASK_FUNC_TYPE)(((task_frame_t*)cur_task)->eip))((task_frame_t*)cur_task);
 }
 
 }

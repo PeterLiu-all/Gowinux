@@ -104,7 +104,8 @@ $(BUILD)/system.map: $(BUILD)/kernel.bin
 $(IMG): \
 	$(BUILD)/boot/boot.bin \
 	$(BUILD)/boot/loader.bin \
-	$(BUILD)/system.bin $(BUILD)/system.map
+	$(BUILD)/system.bin $(BUILD)/system.map \
+	asm
 
 	yes | $(PREFIX)/bin/bximage -q -hd=16 -func=create -sectsize=512 -imgmode=flat $@
 	dd if=$(BUILD)/boot/boot.bin of=$@ bs=512 count=1 conv=notrunc
@@ -117,8 +118,7 @@ test: clean $(IMG)
 .PHONY: image
 image: clean $(IMG)
 .PHONY: asm
-asm: \
-		$(ASM)/kernel/main.s \
+asm:	$(ASM)/kernel/main.s \
 		$(ASM)/kernel/io.s \
 		$(ASM)/kernel/console.s \
 		$(ASM)/kernel/gdt.s \
@@ -126,7 +126,9 @@ asm: \
 		$(ASM)/lib/printk.s \
 		$(ASM)/lib/assert.s \
 		$(ASM)/lib/log.s \
+		$(ASM)/lib/task.s \
 		$(ASM)/lib/vsprintf.s 
+
 	cp $(SRC)/kernel/start.s $(ASM)/kernel/
 	cp -r $(SRC)/boot/ $(ASM)
 	echo "intel风格的代码，内嵌汇编会有问题，不要直接用这个代码编译！"
@@ -148,7 +150,7 @@ bochs: clean $(IMG)
 
 # 使用qemu启动
 .PHONY: qemu
-qemu: $(IMG) asm
+qemu: $(IMG)
 	qemu-system-i386 \
 	-m 32M \
 	-boot c \
@@ -156,7 +158,7 @@ qemu: $(IMG) asm
 
 # 使用qemu调试
 .PHONY: qemug
-qemug: $(IMG) asm
+qemug: $(IMG)
 	qemu-system-i386 \
 	-gdb tcp::1234 -S \
 	-m 32M \
