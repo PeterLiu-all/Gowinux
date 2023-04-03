@@ -87,6 +87,7 @@ $(BUILD)/kernel.bin: \
 		$(BUILD)/lib/printk.o \
 		$(BUILD)/lib/assert.o \
 		$(BUILD)/lib/log.o \
+		$(BUILD)/lib/task.o \
 		$(BUILD)/lib/vsprintf.o 
 	$(shell mkdir -p $(dir $@))
 	$(PREFIX)/bin/$(TARGET)-ld -m elf_i386 -static $^ -o $@ -Ttext $(ENTRYPOINT)
