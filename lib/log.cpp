@@ -26,4 +26,8 @@ void _normal_log(const char *level, const char *message, const char *file, const
     }
     
 }
+
+void _simple_log(const char *level, const char *message){
+    printk("\n[%s]\t %s", level, message);
+}
 }

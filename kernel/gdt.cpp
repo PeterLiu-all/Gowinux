@@ -102,7 +102,7 @@ static GlogalDescriptorTable gdt;
 
 void GlogalDescriptorTable::descriptor_init(descriptor_t* desc, u32 base, u32 limit)
 {
-    DEBUG("init single Descriptor\n");
+    DEBUG("init single Descriptor");
     desc->base_low = base & 0xffffff;
     desc->base_high = (base >> 24) & 0xff;
     desc->limit_low = limit & 0xffff;
@@ -112,7 +112,7 @@ void GlogalDescriptorTable::descriptor_init(descriptor_t* desc, u32 base, u32 li
 // 初始化内核全局描述符表
 void GlogalDescriptorTable::gdt_init()
 {
-    DEBUG("init Glogal Descriptor Table...\n");
+    INFO("init Glogal Descriptor Table...");
     memset(this->table, 0, sizeof(this->table));
 
     descriptor_t* desc;

@@ -20,6 +20,7 @@ CFLAGS+=$(DEBUG)
 # CFLAGS+= -O2
 CFLAGS+= -DGOWINUX
 CFLAGS+= -DGOWINUX_DEBUG
+CFLAGS+= -DSIMPLE_LOG
 # CFLAGS+= -fvisibility=hidden
 # CFLAGS+= --verbose
 CFLAGS:=$(strip $(CFLAGS))
