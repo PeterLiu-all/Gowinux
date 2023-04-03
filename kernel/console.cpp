@@ -54,7 +54,7 @@ public:
     // 构造、析构函数
     static console_t* getInstance()
     {
-        return &console;
+        return &console_t::console;
     }
     // static void deleteInstance(){
     //     delete &console;
@@ -123,6 +123,7 @@ private:
     u16 erase; // 清屏字符
     u8 style; // 当前样式
 };
+
 console_t console_t::console;
 
 void console_t::console_init()
@@ -369,6 +370,7 @@ void console_t::set_cursor()
 
 }
 
+extern "C" {
 void console_clear() { console_t::getInstance()->console_clear(); }
 void console_init() { console_t::getInstance()->console_init(); }
 void console_write(char* buf, u32 count) { console_t::getInstance()->console_write(buf, count); }
@@ -376,3 +378,4 @@ void set_style(u32 stl) { console_t::getInstance()->set_style(stl); }
 u32 get_style() { return console_t::getInstance()->get_style(); }
 void recover_style() { console_t::getInstance()->recover_style(); }
 void console_putchar(char ch) { console_t::getInstance()->console_putchar(ch); }
+}

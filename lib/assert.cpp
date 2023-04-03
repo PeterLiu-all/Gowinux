@@ -5,6 +5,7 @@
 
 static char buf[1024] = {0};
 
+extern "C" {
 // 强制阻塞
 static void spin(const char *name)
 {
@@ -55,4 +56,5 @@ void panic(const char *fmt, ...){
     va_end(args);
     printk("\n[X] PANIC NOW !!!\n--> %s \n", buf);
     spin(__PRETTY_FUNCTION__);
+}
 }

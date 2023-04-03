@@ -2,6 +2,7 @@
 #include "lib/printk.h"
 #include "lib/string.h"
 
+extern "C" {
 void _normal_log(const char *level, const char *message, const char *file, const char *base, const char *func, unsigned int line){
     if (isbreak(message[strlen(message)-1]))
     {
@@ -24,4 +25,5 @@ void _normal_log(const char *level, const char *message, const char *file, const
         level, message, file, base, func, line);
     }
     
+}
 }

@@ -7,7 +7,7 @@
 extern "C" {
 #endif // __cplusplus
 
-    void kernel_init();
+void kernel_init();
 
 #ifdef __cplusplus
 }

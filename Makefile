@@ -1,13 +1,15 @@
 SRC:=$(MYOS)/workspace
 BUILD:=$(SRC)/build
+ASM:=$(SRC)/asm
 IMG:=$(BUILD)/master.img
 DEBUG:= -g
 STRIP:= -s
 
 CFLAGS:= -m32
+CFLAGS+= -finline-functions
 CFLAGS+= -ffreestanding
 CFLAGS+= -nostdlib
-# CFLAGS+= -nostdinc
+CFLAGS+= -nostdinc
 CFLAGS+= -nostartfiles
 CFLAGS+= -fno-builtin
 CFLAGS+= -fno-pic
@@ -18,10 +20,13 @@ CFLAGS+=$(DEBUG)
 # CFLAGS+= -O2
 CFLAGS+= -DGOWINUX
 CFLAGS+= -DGOWINUX_DEBUG
-CFLAGS+= -c
-CFLAGS+= -fvisibility=hidden
+# CFLAGS+= -fvisibility=hidden
 # CFLAGS+= --verbose
 CFLAGS:=$(strip $(CFLAGS))
+
+ASMFLAGS:= 
+ASMFLAGS+= -masm=intel
+ASMFLAGS:=$(strip $(ASMFLAGS))
 
 INCLUDE:= -I$(SRC)/include -I$(SRC)
 
@@ -40,19 +45,36 @@ $(BUILD)/kernel/%.o: $(SRC)/kernel/%.s
 # 编译C/C++
 $(BUILD)/kernel/%.o: $(SRC)/kernel/%.cpp
 	$(shell mkdir -p $(dir $@))
-	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -x c++ $< -o $@
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -c -x c++ $< -o $@
 
 $(BUILD)/kernel/%.o: $(SRC)/kernel/%.c
 	$(shell mkdir -p $(dir $@))
-	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -x c $< -o $@
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -Wall -std=c11 -c -x c $< -o $@
 
 $(BUILD)/lib/%.o: $(SRC)/lib/%.cpp
 	$(shell mkdir -p $(dir $@))
-	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -x c++ $< -o $@
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -c -x c++ $< -o $@
 
 $(BUILD)/lib/%.o: $(SRC)/lib/%.c
 	$(shell mkdir -p $(dir $@))
-	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -x c $< -o $@
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -Wall -std=c11 -c -x c $< -o $@
+
+# 编译C/C++
+$(ASM)/kernel/%.s: $(SRC)/kernel/%.cpp
+	$(shell mkdir -p $(dir $@))
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -S $(ASMFLAGS) -x c++ $< -o $@
+
+$(ASM)/kernel/%.s: $(SRC)/kernel/%.c
+	$(shell mkdir -p $(dir $@))
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -Wall -std=c11 -S $(ASMFLAGS) -x c $< -o $@
+
+$(ASM)/lib/%.s: $(SRC)/lib/%.cpp
+	$(shell mkdir -p $(dir $@))
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -S $(ASMFLAGS) -x c++ $< -o $@
+
+$(ASM)/lib/%.s: $(SRC)/lib/%.c
+	$(shell mkdir -p $(dir $@))
+	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -Wall -std=c11 -S $(ASMFLAGS) -x c $< -o $@
 
 # 生成kernel
 $(BUILD)/kernel.bin: \
@@ -65,7 +87,7 @@ $(BUILD)/kernel.bin: \
 		$(BUILD)/lib/printk.o \
 		$(BUILD)/lib/assert.o \
 		$(BUILD)/lib/log.o \
-		$(BUILD)/lib/vsprintf.o
+		$(BUILD)/lib/vsprintf.o 
 	$(shell mkdir -p $(dir $@))
 	$(PREFIX)/bin/$(TARGET)-ld -m elf_i386 -static $^ -o $@ -Ttext $(ENTRYPOINT)
 
@@ -89,12 +111,33 @@ $(IMG): \
 	dd if=$(BUILD)/system.bin of=$@ bs=512 count=200 seek=10 conv=notrunc
 
 # 测试
+.PHONY: test
 test: clean $(IMG)
-
+.PHONY: image
+image: clean $(IMG)
+.PHONY: asm
+asm: \
+		$(ASM)/kernel/main.s \
+		$(ASM)/kernel/io.s \
+		$(ASM)/kernel/console.s \
+		$(ASM)/kernel/gdt.s \
+		$(ASM)/lib/string.s \
+		$(ASM)/lib/printk.s \
+		$(ASM)/lib/assert.s \
+		$(ASM)/lib/log.s \
+		$(ASM)/lib/vsprintf.s 
+	cp $(SRC)/kernel/start.s $(ASM)/kernel/
+	cp -r $(SRC)/boot/ $(ASM)
+	echo "intel风格的代码，内嵌汇编会有问题，不要直接用这个代码编译！"
 # 清理
 .PHONY: clean
 clean: 
 	rm -rf $(BUILD)
+	rm -rf $(ASM)
+
+.PHONY: cleanasm
+cleanasm: 
+	rm -rf $(ASM)
 
 # 使用bochs启动
 .PHONY: bochs
@@ -104,7 +147,7 @@ bochs: clean $(IMG)
 
 # 使用qemu启动
 .PHONY: qemu
-qemu: $(IMG)
+qemu: $(IMG) asm
 	qemu-system-i386 \
 	-m 32M \
 	-boot c \
@@ -112,12 +155,12 @@ qemu: $(IMG)
 
 # 使用qemu调试
 .PHONY: qemug
-qemug: $(IMG)
+qemug: $(IMG) asm
 	qemu-system-i386 \
 	-gdb tcp::1234 -S \
 	-m 32M \
 	-boot c \
-	-hda $<
+	-hda $< 
 
 # 导出为VMware的vmdk格式
 $(BUILD)/master.vmdk: $(IMG)

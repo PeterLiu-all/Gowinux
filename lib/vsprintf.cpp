@@ -20,6 +20,7 @@ constexpr static const u8 LEFT = 16;    // 左调整
 constexpr static const u8 SPECIAL = 32; // 0x
 constexpr static const u8 SMALL = 64;   // 使用小写字母
 
+extern "C" {
 // 将字符数字串转换成整数，并将指针前移
 static int skip_atoi(const char **s)
 {
@@ -391,4 +392,5 @@ int sprintf(char *buf, const char *fmt, ...)
     int i = vsprintf(buf, fmt, args);
     va_end(args);
     return i;
+}
 }

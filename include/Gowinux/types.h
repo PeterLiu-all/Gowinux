@@ -1,7 +1,24 @@
 #ifndef __GOWINUX_TYPES_H__
 #define __GOWINUX_TYPES_H__
 
-#include <stdbool.h>
+// stdbool.h的内容
+/* Don't define bool, true, and false in C++, except as a GNU extension. */
+#ifndef __cplusplus
+#define bool _Bool
+#define true 1
+#define false 0
+#elif defined(__GNUC__) && !defined(__STRICT_ANSI__)
+/* Define _Bool as a GNU extension. */
+#define _Bool bool
+#if __cplusplus < 201103L
+/* For C++98, define bool, false, true as a GNU extension. */
+#define bool  bool
+#define false false
+#define true  true
+#endif
+#endif
+
+#define __bool_true_false_are_defined 1
 
 #define EOF -1
 #define EOS '\0'
@@ -36,7 +53,6 @@ using u16 = unsigned short;
 using u32 = unsigned int;
 using u64 = unsigned long long;
 #else
-#include <stdbool.h>
 typedef unsigned int size_t;
 typedef char int8;
 typedef short int16;

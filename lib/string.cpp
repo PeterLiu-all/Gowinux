@@ -1,6 +1,7 @@
 #include "lib/string.h"
 #include "lib/log.h"
 
+extern "C" {
 // namespace std {
 char* strcpy(char* dest, const char* src)
 {
@@ -48,22 +49,22 @@ int strcmp(const char* lhs, const char* rhs)
     // 都不成立返回0
     return lhs[curp] < rhs[curp] ? -1 : lhs[curp] > rhs[curp];
 }
-char* strchr(const char* str, int ch){
+char* strchr(const char* str, int ch)
+{
     size_t curp = 0;
     while (str[curp] != EOS) {
-        if (str[curp] == ch)
-        {
+        if (str[curp] == ch) {
             return (char*)(str + curp);
         }
     }
     return nullptr;
 }
-char* strrchr(const char* str, int ch){
+char* strrchr(const char* str, int ch)
+{
     size_t curp = 0;
     char* last = nullptr;
     while (str[curp] != EOS) {
-        if (str[curp] == ch)
-        {
+        if (str[curp] == ch) {
             last = (char*)(str + curp);
         }
         curp++;
@@ -71,11 +72,11 @@ char* strrchr(const char* str, int ch){
     return last;
 }
 
-int memcmp(const void* lhs, const void* rhs, size_t count){
-    char *lptr = (char *)lhs;
-    char *rptr = (char *)rhs;
-    while ((count > 0) && *lptr == *rptr)
-    {
+int memcmp(const void* lhs, const void* rhs, size_t count)
+{
+    char* lptr = (char*)lhs;
+    char* rptr = (char*)rhs;
+    while ((count > 0) && *lptr == *rptr) {
         lptr++;
         rptr++;
         count--;
@@ -84,84 +85,70 @@ int memcmp(const void* lhs, const void* rhs, size_t count){
         return 0;
     return *lptr < *rptr ? -1 : *lptr > *rptr;
 }
-void* memset(void* dest, int ch, size_t count){
-    for(int i = 0; i < count; i++)
-    {
+void* memset(void* dest, int ch, size_t count)
+{
+    for (int i = 0; i < count; i++) {
         ((char*)dest)[i] = ch;
     }
     return dest;
 }
-void* memcpy(void* dest, const void* src, size_t count){
-    for(int i = 0; i < count; i++)
-    {
+void* memcpy(void* dest, const void* src, size_t count)
+{
+    for (int i = 0; i < count; i++) {
         ((char*)dest)[i] = ((char*)src)[i];
     }
     return dest;
 }
-void* memchr(const void* str, int ch, size_t count){
-    for(int i = 0; i < count; i++)
-    {
-        if (((char*)str)[i] == ch)
-        {
+void* memchr(const void* str, int ch, size_t count)
+{
+    for (int i = 0; i < count; i++) {
+        if (((char*)str)[i] == ch) {
             return (char*)str + i;
         }
     }
     return nullptr;
 }
 
-#define SEPARATOR1 '/'                                       // 目录分隔符 1
-#define SEPARATOR2 '\\'                                      // 目录分隔符 2
+#define SEPARATOR1 '/' // 目录分隔符 1
+#define SEPARATOR2 '\\' // 目录分隔符 2
 #define IS_SEPARATOR(c) (c == SEPARATOR1 || c == SEPARATOR2) // 字符是否位目录分隔符
 
 // 获取第一个分隔符
-char *strsep(const char *str)
+char* strsep(const char* str)
 {
-    char *ptr = (char *)str;
-    while (true)
-    {
-        if (IS_SEPARATOR(*ptr))
-        {
+    char* ptr = (char*)str;
+    while (true) {
+        if (IS_SEPARATOR(*ptr)) {
             return ptr;
         }
-        if (*ptr++ == EOS)
-        {
+        if (*ptr++ == EOS) {
             return nullptr;
         }
     }
 }
 
 // 获取最后一个分隔符
-char *strrsep(const char *str)
+char* strrsep(const char* str)
 {
-    char *last = nullptr;
-    char *ptr = (char *)str;
-    while (true)
-    {
-        if (IS_SEPARATOR(*ptr))
-        {
+    char* last = nullptr;
+    char* ptr = (char*)str;
+    while (true) {
+        if (IS_SEPARATOR(*ptr)) {
             last = ptr;
         }
-        if (*ptr++ == EOS)
-        {
+        if (*ptr++ == EOS) {
             return last;
         }
     }
 }
 // }
 
-char* itoa(const int num, char* store, const int radix){
-    if (radix > 0 && radix < 17)
-    {
-        return ltoa(num, store, radix);
-    }else
-    {
+char* _ltoa(const long num, char* store, const int radix)
+{
+    if (!(radix > 0 && radix < 17)) {
         ERROR("radix unknown!");
         return store;
     }
-    
-}
-
-char* ltoa(const long num, char* store, const int radix){
     char stack[21] = { '\0' };
     char* esp = stack;
     char sym_table[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -182,23 +169,21 @@ char* ltoa(const long num, char* store, const int radix){
     return store;
 }
 
-char* uitoa(const unsigned int num, char* store, const int radix){
-    if (radix > 0 && radix < 17)
-    {
-        return ultoa(num, store, radix);
-    }else
-    {
+char* _ultoa(const long num, char* store, const int radix)
+{
+    if (!(radix > 0 && radix < 17)) {
         ERROR("radix unknown!");
         return store;
     }
-}
-
-char* ultoa(const unsigned long num, char* store, const int radix){
     char stack[21] = { '\0' };
     char* esp = stack;
     char sym_table[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    long abs_val = num;
     unsigned int curp = 0;
-    unsigned long abs_val = num;
+    if (radix == 10 && num < 0) {
+        abs_val = -num;
+        store[curp++] = '-';
+    }
     do {
         push(&esp, sym_table[abs_val % radix]);
         abs_val /= radix;
@@ -208,4 +193,5 @@ char* ultoa(const unsigned long num, char* store, const int radix){
     }
     store[curp] = '\0';
     return store;
+}
 }

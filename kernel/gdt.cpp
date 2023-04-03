@@ -182,5 +182,7 @@ void GlogalDescriptorTable::tss_init()
 }
 }
 
+extern "C" {
 void gdt_init() { gdt.gdt_init(); }
 void tss_init() { gdt.tss_init(); }
+}

@@ -4,6 +4,7 @@
 
 static char buf[1024] = {0};
 
+extern "C" {
 int printk(const char* fmt, ...){
     va_list args;
     int cnt = 0;
@@ -17,4 +18,5 @@ int printk(const char* fmt, ...){
     console_write(buf, cnt);
 
     return cnt;
+}
 }

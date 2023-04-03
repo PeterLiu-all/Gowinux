@@ -2,6 +2,7 @@
 #include "Gowinux/io.h"
 #include "lib/string.h"
 // namespace std {
+extern "C" {
 u8 inb(u16 port)
 {
     u8 content;
@@ -44,5 +45,6 @@ void outw(u16 port, u16 value)
         :
         : "r"(port), "r"(value)
         : "edx", "memory");
+}
 }
 // }
