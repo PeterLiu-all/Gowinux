@@ -12,9 +12,14 @@ void panic(const char* fmt, ...);
 }
 #endif // __cplusplus
 
+#ifdef GOWINUX_DEBUG
 #define assert(exp)                                                 \
     do {                                                            \
         if (!(exp))                                                   \
             assert_failed(#exp, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__); \
     } while (0)
+#else
+#define assert(exp) 
+#endif // GOWINUX_DEBUG
+
 #endif /* __LIB_ASSERT_H__ */

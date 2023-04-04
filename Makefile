@@ -41,7 +41,11 @@ $(BUILD)/boot/%.bin: $(SRC)/boot/%.s
 # 汇编kernel的启动函数
 $(BUILD)/kernel/%.o: $(SRC)/kernel/%.s
 	$(shell mkdir -p $(dir $@))
-	nasm -f elf32 $(DEBUG) $< -o $@ -gdwarf
+	nasm -f elf32 $(DEBUG) $< -o $@
+
+$(BUILD)/lib/%.o: $(SRC)/lib/%.s
+	$(shell mkdir -p $(dir $@))
+	nasm -f elf32 $(DEBUG) $< -o $@
 
 # 编译C/C++
 $(BUILD)/kernel/%.o: $(SRC)/kernel/%.cpp
@@ -84,6 +88,8 @@ $(BUILD)/kernel.bin: \
 		$(BUILD)/kernel/io.o \
 		$(BUILD)/kernel/console.o \
 		$(BUILD)/kernel/gdt.o \
+		$(BUILD)/kernel/idt_handler.o \
+		$(BUILD)/kernel/idt.o \
 		$(BUILD)/lib/string.o \
 		$(BUILD)/lib/printk.o \
 		$(BUILD)/lib/assert.o \
@@ -123,6 +129,7 @@ asm:	$(ASM)/kernel/main.s \
 		$(ASM)/kernel/io.s \
 		$(ASM)/kernel/console.s \
 		$(ASM)/kernel/gdt.s \
+		$(ASM)/kernel/idt.s \
 		$(ASM)/lib/string.s \
 		$(ASM)/lib/printk.s \
 		$(ASM)/lib/assert.s \
@@ -131,6 +138,7 @@ asm:	$(ASM)/kernel/main.s \
 		$(ASM)/lib/vsprintf.s 
 
 	cp $(SRC)/kernel/start.s $(ASM)/kernel/
+	cp $(SRC)/kernel/idt_handler.s $(ASM)/kernel/
 	cp -r $(SRC)/boot/ $(ASM)
 	echo "intel风格的代码，内嵌汇编会有问题，不要直接用这个代码编译！"
 # 清理

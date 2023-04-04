@@ -1,8 +1,9 @@
 #include "Gowinux/gdt.h"
 #include "lib/log.h"
 #include "lib/string.h"
+#include "Gowinux/descptr.h"
 
-namespace {
+// namespace {
 // 定义有多少个global descriptor
 constexpr static const u8 GDT_SIZE = 128;
 
@@ -43,12 +44,6 @@ struct selector_t {
     u8 TI : 1; // Table Indicator
     u16 index : 13;
 };
-
-// 全局描述符表指针
-struct pointer_t {
-    u16 limit;
-    u32 base;
-} _packed;
 
 struct tss_t {
     u32 backlink; // 前一个任务的链接，保存了前一个任状态段的段选择子
@@ -158,6 +153,9 @@ void GlogalDescriptorTable::gdt_init()
 
     this->ptr.base = (u32) & (this->table);
     this->ptr.limit = sizeof(this->table) - 1;
+    __asm__ volatile(
+            "lgdt %0\n\t"::"m"(ptr):"memory"
+    );
 }
 
 void GlogalDescriptorTable::tss_init()
@@ -180,7 +178,7 @@ void GlogalDescriptorTable::tss_init()
     __asm__ volatile(
         "ltr %%ax\n" ::"a"(KERNEL_TSS_SELECTOR));
 }
-}
+// }
 
 extern "C" {
 void gdt_init() { gdt.gdt_init(); }
