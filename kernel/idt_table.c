@@ -7,6 +7,9 @@
 // 使用C99的特性（Array designators）来初始化数组
 
 extern void interrupt_default_handler();
+// 默认中断入口
+extern void interrupt_default_entry();
+extern void syscall_handler();
 
 // 异常
 extern void interrupt_handler_0x00();
@@ -58,9 +61,7 @@ extern void interrupt_handler_0x2c();
 extern void interrupt_handler_0x2d();
 extern void interrupt_handler_0x2e();
 extern void interrupt_handler_0x2f();
-
-// 默认中断入口
-extern void interrupt_default_entry();
+extern void interrupt_handler_0x80();
 
 static char* messages[] = {
     "#DE Divide Error",
@@ -88,7 +89,7 @@ static char* messages[] = {
 };
 
 // 与汇编的调用约定契合
-void exception_handler(
+static void exception_handler(
     int vector,
     u32 edi, u32 esi, u32 ebp, u32 esp,
     u32 ebx, u32 edx, u32 ecx, u32 eax,
@@ -139,16 +140,20 @@ void send_eoi(int vector)
     }
 }
 
-void outer_interrupt_default_handler(int vector)
+static void outer_interrupt_default_handler(int vector)
 {
     send_eoi(vector);
     INFO("calling outer interrupt NO.%x...\n\tNothing happend because this is a default handler...\n", vector);
 }
 
+// 每个中断实际做什么，但是0x80号中断：syscall的行为依赖于系统调用号
+// 所以0x80号会跳转到一个查表的函数里
 handler_t idt_table[IDT_SIZE] = {
     [0 ... 31] = exception_handler,
     [32 ... 47] = outer_interrupt_default_handler,
-    [48 ... IDT_TAIL] = interrupt_default_handler
+    [48 ... 127] = interrupt_default_handler,
+    [128] = syscall_handler,
+    [129 ... IDT_TAIL] = interrupt_default_handler
 };
 
 handler_t idt_entries[IDT_SIZE] = {
@@ -200,5 +205,7 @@ handler_t idt_entries[IDT_SIZE] = {
     [45] = interrupt_handler_0x2d,
     [46] = interrupt_handler_0x2e,
     [47] = interrupt_handler_0x2f,
-    [48 ... IDT_TAIL] = interrupt_default_handler
+    [48 ... 127] = interrupt_default_handler,
+    [128] = interrupt_handler_0x80,
+    [129 ... IDT_TAIL] = interrupt_default_handler
 };

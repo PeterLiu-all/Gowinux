@@ -3,8 +3,13 @@
 #include "Gowinux/idt_handler.h"
 #include "Gowinux/io.h"
 #include "lib/log.h"
+#include "lib/reg.h"
 
 extern "C" void interrupt_entry();
+extern "C" void syscall_handler();
+
+#define CLEAR_IF __asm__ volatile("cli\n\t")
+#define SET_IF __asm__ volatile("sti\n\t")
 
 class InterruptDescriptorTable {
 public:
@@ -24,6 +29,9 @@ public:
             table[i].DPL = 0;
             table[i].present = 1;
         }
+
+        table[0x80].DPL = 3; // 0x80号中断：syscall处于用户态
+
         ptr.base = (u32)table;
         ptr.limit = sizeof(gate_t) * IDT_SIZE - 1;
         // 	由于寄存器的限制，我们不能直接将一个地址传递给寄存器，需要通过对寄存器和内存操作符的组合来传递地址。在使用m作为操作数限定符时，gcc会将操作数存放到内存中，并返回对应的内存地址。
@@ -67,4 +75,36 @@ void interrupt_init()
     );
 }
 
+// 获得 IF 位
+bool get_interrupt_state()
+{
+    size_t eflag = 0;
+    get_eflags(eflag);
+    return (bool)((eflag << 9) & 0x1);
+}
+
+// 清除 IF 位，返回设置之前的值
+bool interrupt_disable()
+{
+    bool eflag_IF = get_interrupt_state();
+    CLEAR_IF;
+    return eflag_IF;
+}
+
+// 设置 IF 位，返回设置之前的值
+bool interrupt_enable()
+{
+    bool eflag_IF = get_interrupt_state();
+    SET_IF;
+    return eflag_IF;
+}
+
+// 设置 IF 位
+bool set_interrupt_state(bool state)
+{
+    if (state)
+        return interrupt_enable();
+    else
+        return interrupt_disable();
+}
 }

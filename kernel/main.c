@@ -60,11 +60,13 @@ void kernel_init()
     // task_end(&tsk2);
     // printk("I'm back!\n");
     INFO("Gowinux is NO.%d", 1);
-    // __asm__ volatile(
-    //     "int $0x80\n\t"
-    //     "int $0x22\n\t"
-    //     "int $0x2\n\t"
-    // );
+    size_t ret = 1;
+    __asm__ volatile(
+        "movl $1, %%eax\n\t"
+        "int $0x80\n\t"
+        :"=a"(ret)::"memory"
+    );
+    INFO("return val is %d", ret);
     int a = 1/0;
     return;
 }

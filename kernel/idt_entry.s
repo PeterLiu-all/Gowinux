@@ -55,7 +55,7 @@ interrupt_exit:
     ; call task_signal
 
     ; 恢复下文寄存器信息
-    popa
+    popad
     pop gs
     pop fs
     pop es
@@ -123,3 +123,35 @@ INTERRUPT_HANDLER 0x2c, 0
 INTERRUPT_HANDLER 0x2d, 0
 INTERRUPT_HANDLER 0x2e, 0; harddisk1 硬盘主通道
 INTERRUPT_HANDLER 0x2f, 0; harddisk2 硬盘从通道
+INTERRUPT_HANDLER 0x80, 0; 系统调用
+
+extern syscall_check
+extern syscall_table
+
+global syscall_handler
+syscall_handler:
+    ; 验证系统调用号
+    push eax
+    call syscall_check
+    pop eax
+
+    push ebp; 第六个参数
+    push edi; 第五个参数
+    push esi; 第四个参数
+    push edx; 第三个参数
+    push ecx; 第二个参数
+    push ebx; 第一个参数
+
+    ; 调用系统调用处理函数，syscall_table 中存储了系统调用处理函数的指针
+    call [syscall_table + eax * 4]
+
+    ; xchg bx, bx
+    add esp, (6 * 4); 系统调用结束恢复栈
+
+    ; 修改栈中 eax 寄存器，设置系统调用返回值
+    ; interrupt_entry call过来的时候push入一个eip
+    ; pushad后push了中断号
+    ; pushad第一个是eax，而pushad一共会push八个寄存器
+    mov dword [esp + 9 * 4], eax
+
+    ret ; 返回，这时候应该返回到interrupt_exit

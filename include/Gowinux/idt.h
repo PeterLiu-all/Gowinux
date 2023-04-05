@@ -46,6 +46,14 @@ typedef void * handler_t;
 
 void interrupt_init();
 void send_eoi(int vector);
+// 获得 IF 位
+bool get_interrupt_state();
+// 清除 IF 位，返回设置之前的值
+bool interrupt_disable();
+// 设置 IF 位，返回设置之前的值
+bool interrupt_enable();
+// 设置 IF 位
+bool set_interrupt_state(bool state);
 
 #ifdef __cplusplus
 }

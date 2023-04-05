@@ -81,6 +81,10 @@ $(ASM)/lib/%.s: $(SRC)/lib/%.c
 	$(shell mkdir -p $(dir $@))
 	$(PREFIX)/bin/$(TARGET)-gcc $(CFLAGS) $(INCLUDE) -Wall -std=c11 -S $(ASMFLAGS) -x c $< -o $@
 
+$(ASM)/kernel/idt_entry.s: $(SRC)/kernel/idt_entry.s
+	$(shell mkdir -p $(dir $@))
+	nasm -E -f elf32 $(DEBUG) $< -o $@
+
 # 生成kernel
 $(BUILD)/kernel.bin: \
 		$(BUILD)/kernel/start.o \
@@ -91,6 +95,7 @@ $(BUILD)/kernel.bin: \
 		$(BUILD)/kernel/idt_handler.o \
 		$(BUILD)/kernel/idt_entry.o \
 		$(BUILD)/kernel/idt_table.o \
+		$(BUILD)/kernel/syscall_table.o \
 		$(BUILD)/kernel/idt.o \
 		$(BUILD)/lib/string.o \
 		$(BUILD)/lib/printk.o \
@@ -133,6 +138,8 @@ asm:	$(ASM)/kernel/main.s \
 		$(ASM)/kernel/gdt.s \
 		$(ASM)/kernel/idt.s \
 		$(ASM)/kernel/idt_table.s \
+		$(ASM)/kernel/idt_entry.s \
+		$(ASM)/kernel/syscall_table.s \
 		$(ASM)/lib/string.s \
 		$(ASM)/lib/printk.s \
 		$(ASM)/lib/assert.s \
@@ -142,7 +149,7 @@ asm:	$(ASM)/kernel/main.s \
 
 	cp $(SRC)/kernel/start.s $(ASM)/kernel/
 	cp $(SRC)/kernel/idt_handler.s $(ASM)/kernel/
-	cp $(SRC)/kernel/idt_entry.s $(ASM)/kernel/
+	# cp $(SRC)/kernel/idt_entry.s $(ASM)/kernel/
 	cp -r $(SRC)/boot/ $(ASM)
 	# echo "intel风格的代码，内嵌汇编会有问题，不要直接用这个代码编译！"
 # 清理
