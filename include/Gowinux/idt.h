@@ -9,8 +9,12 @@ extern "C"{
 
 #ifdef __cplusplus
 constexpr static const size_t IDT_SIZE = 256;
+constexpr static const size_t IDT_TAIL = 255;
+constexpr static const size_t DEFINED_IDT_SIZE = 48;
 #else
 #define IDT_SIZE 256
+#define IDT_TAIL 255
+#define DEFINED_IDT_SIZE 256
 #endif // __cplusplus
 
 

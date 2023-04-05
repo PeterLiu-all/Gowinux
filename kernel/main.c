@@ -46,6 +46,11 @@ void kernel_init()
     console_init();
     gdt_init();
     idt_init();
+    __asm__ volatile(
+        "int $0x80\n\t"
+        "int $0x1\n\t"
+        "int $0x2\n\t"
+    );
     // task_init();
     // set_style(WHITE);
     // // for(int i = 0; i < 100; i++)
