@@ -10,11 +10,19 @@ extern "C"{
 #ifdef __cplusplus
 constexpr static const size_t IDT_SIZE = 256;
 constexpr static const size_t IDT_TAIL = 255;
-constexpr static const size_t DEFINED_IDT_SIZE = 48;
+constexpr static const u8 PIC_M_CTRL = 0x20; // 主片的控制端口
+constexpr static const u8 PIC_M_DATA = 0x21; // 主片的数据端口
+constexpr static const u8 PIC_S_CTRL = 0xa0; // 从片的控制端口
+constexpr static const u8 PIC_S_DATA = 0xa1; // 从片的数据端口
+constexpr static const u8 PIC_EOI = 0x20; // 通知中断控制器中断结束
 #else
 #define IDT_SIZE 256
 #define IDT_TAIL 255
-#define DEFINED_IDT_SIZE 256
+#define PIC_M_CTRL 0x20 // 主片的控制端口
+#define PIC_M_DATA 0x21 // 主片的数据端口
+#define PIC_S_CTRL 0xa0 // 从片的控制端口
+#define PIC_S_DATA 0xa1 // 从片的数据端口
+#define PIC_EOI 0x20    // 通知中断控制器中断结束
 #endif // __cplusplus
 
 
@@ -35,7 +43,9 @@ using handler_t = void*;
 #else
 typedef void * handler_t;
 #endif // __cplus
-void idt_init();
+
+void interrupt_init();
+void send_eoi(int vector);
 
 #ifdef __cplusplus
 }

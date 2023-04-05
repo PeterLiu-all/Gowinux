@@ -11,9 +11,9 @@ void _normal_log(
     const char* file,
     const char* base,
     const char* func,
-    unsigned int line);
+    unsigned int line, ...);
 
-void _simple_log(const char *level, const char *message);
+void _simple_log(const char *level, const char *message, ...);
 #ifdef __cplusplus
 }
 #endif // __cplusplus
@@ -23,23 +23,23 @@ void _simple_log(const char *level, const char *message);
 #endif // __cplusplus
 
 #ifdef SIMPLE_LOG
-#define  INFO(msg)  _simple_log("INFO", msg)
+#define  INFO(msg, ...)  _simple_log("INFO", msg, ##__VA_ARGS__)
 #ifdef GOWINUX_DEBUG
-#define  DEBUG(msg)  _simple_log("DEBUG", msg)
+#define  DEBUG(msg, ...)  _simple_log("DEBUG", msg, ##__VA_ARGS__)
 #else
-#define DEBUG(msg) 
+#define DEBUG(msg, ...) 
 #endif
-#define  ERROR(msg)  _simple_log("ERROR", msg)
-#define  WARNING(msg)  _simple_log("WARNING", msg)
+#define  ERROR(msg, ...)  _simple_log("ERROR", msg, ##__VA_ARGS__)
+#define  WARNING(msg, ...)  _simple_log("WARNING", msg, ##__VA_ARGS__)
 #else
-#define INFO(msg) _normal_log("INFO", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__)
+#define INFO(msg, ...) _normal_log("INFO", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 #ifdef GOWINUX_DEBUG
-#define DEBUG(msg) _normal_log("DEBUG", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__)
+#define DEBUG(msg) _normal_log("DEBUG", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 #else
-#define DEBUG(msg) 
+#define DEBUG(msg, ...) 
 #endif
-#define ERROR(msg) _normal_log("ERROR", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__)
-#define WARNING(msg) _normal_log("WARNING", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__)
+#define ERROR(msg, ...) _normal_log("ERROR", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define WARNING(msg, ...) _normal_log("WARNING", msg, __FILE__, __BASE_FILE__, __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 #endif // SIMPLE_LOG
 
 #endif /* __LIB_LOG_H__ */

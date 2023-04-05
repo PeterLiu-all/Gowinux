@@ -34,7 +34,7 @@ interrupt_entry:
     push gs
     ; PUSHA指令用于将16位寄存器按以下顺序压入堆栈：AX、CX、DX、BX、SP、BP、SI、DI。PUSHAD指令用于将32位寄存器按以下顺序压入堆栈：EAX、ECX、EDX、EBX、ESP、EBP、ESI、EDI
     ; 因此这里压入8个16位寄存器
-    pusha
+    pushad
 
     ; 找到前面 push %1 压入的 中断向量
     mov eax, [esp + 12 * 4]

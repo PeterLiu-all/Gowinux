@@ -45,12 +45,7 @@ void kernel_init()
     size_t store = 0;
     console_init();
     gdt_init();
-    idt_init();
-    __asm__ volatile(
-        "int $0x80\n\t"
-        "int $0x1\n\t"
-        "int $0x2\n\t"
-    );
+    interrupt_init();
     // task_init();
     // set_style(WHITE);
     // // for(int i = 0; i < 100; i++)
@@ -64,5 +59,12 @@ void kernel_init()
     // task_end(&tsk1);
     // task_end(&tsk2);
     // printk("I'm back!\n");
+    INFO("Gowinux is NO.%d", 1);
+    // __asm__ volatile(
+    //     "int $0x80\n\t"
+    //     "int $0x22\n\t"
+    //     "int $0x2\n\t"
+    // );
+    int a = 1/0;
     return;
 }

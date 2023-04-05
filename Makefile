@@ -119,7 +119,7 @@ $(IMG): \
 	yes | $(PREFIX)/bin/bximage -q -hd=16 -func=create -sectsize=512 -imgmode=flat $@
 	dd if=$(BUILD)/boot/boot.bin of=$@ bs=512 count=1 conv=notrunc
 	dd if=$(BUILD)/boot/loader.bin of=$@ bs=512 count=4 seek=2 conv=notrunc
-	dd if=$(BUILD)/system.bin of=$@ bs=512 count=200 seek=10 conv=notrunc
+	dd if=$(BUILD)/system.bin of=$@ bs=512 count=2000 seek=10 conv=notrunc
 
 # 测试
 .PHONY: test

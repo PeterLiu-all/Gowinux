@@ -112,7 +112,7 @@ protect_mode:
 
     mov edi, 0x10000
     mov ecx, 10
-    mov bl, 200
+    mov bl, 2000
     call read_disk
 
     jmp dword code_selector:0x10000

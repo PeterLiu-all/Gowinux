@@ -9,6 +9,7 @@ typedef char* va_list;
 
 
 #define va_start(args_ptr, var) (args_ptr = (va_list)&var + sizeof(char*))
+#define va_start_t(args_ptr, var, type) (args_ptr = (va_list)&var + sizeof(type))
 #define va_arg(args_ptr, type) (*(type*)((args_ptr += sizeof(char*)) - sizeof(char*)))
 #define va_end(args_ptr) (args_ptr = (va_list) nullptr)
 
