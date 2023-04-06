@@ -97,6 +97,7 @@ $(BUILD)/kernel.bin: \
 		$(BUILD)/kernel/idt_table.o \
 		$(BUILD)/kernel/syscall_table.o \
 		$(BUILD)/kernel/idt.o \
+		$(BUILD)/kernel/clock.o \
 		$(BUILD)/lib/string.o \
 		$(BUILD)/lib/printk.o \
 		$(BUILD)/lib/assert.o \
@@ -140,6 +141,7 @@ asm:	$(ASM)/kernel/main.s \
 		$(ASM)/kernel/idt_table.s \
 		$(ASM)/kernel/idt_entry.s \
 		$(ASM)/kernel/syscall_table.s \
+		$(ASM)/kernel/clock.s \
 		$(ASM)/lib/string.s \
 		$(ASM)/lib/printk.s \
 		$(ASM)/lib/assert.s \

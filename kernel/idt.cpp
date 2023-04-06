@@ -1,15 +1,9 @@
 #include "Gowinux/idt.h"
 #include "Gowinux/descptr.h"
-#include "Gowinux/idt_handler.h"
 #include "Gowinux/io.h"
 #include "lib/log.h"
 #include "lib/reg.h"
 
-extern "C" void interrupt_entry();
-extern "C" void syscall_handler();
-
-#define CLEAR_IF __asm__ volatile("cli\n\t")
-#define SET_IF __asm__ volatile("sti\n\t")
 
 class InterruptDescriptorTable {
 public:
@@ -86,25 +80,53 @@ bool get_interrupt_state()
 // 清除 IF 位，返回设置之前的值
 bool interrupt_disable()
 {
-    bool eflag_IF = get_interrupt_state();
-    CLEAR_IF;
-    return eflag_IF;
-}
-
-// 设置 IF 位，返回设置之前的值
-bool interrupt_enable()
-{
-    bool eflag_IF = get_interrupt_state();
-    SET_IF;
-    return eflag_IF;
+    size_t eflag = 0;
+    get_eflags(eflag);
+    __asm__ volatile("cli\n\t");
+    return (bool)((eflag << 9) & 0x1);
 }
 
 // 设置 IF 位
-bool set_interrupt_state(bool state)
+void set_interrupt_state(bool state)
 {
     if (state)
-        return interrupt_enable();
+        interrupt_enable();
     else
-        return interrupt_disable();
+        interrupt_disable();
+}
+
+// 通知中断控制器，中断处理结束
+void send_eoi(int vector)
+{
+    if (vector >= 0x20 && vector < 0x28) {
+        outb(PIC_M_CTRL, PIC_EOI);
+    }
+    if (vector >= 0x28 && vector < 0x30) {
+        outb(PIC_M_CTRL, PIC_EOI);
+        outb(PIC_S_CTRL, PIC_EOI);
+    }
+}
+
+void set_interrupt_mask(u32 irq, bool enable)
+{
+    assert(irq >= 0 && irq < 16);
+    u16 port;
+    if (irq < 8)
+    {
+        port = PIC_M_DATA;
+    }
+    else
+    {
+        port = PIC_S_DATA;
+        irq -= 8;
+    }
+    if (enable)
+    {
+        outb(port, inb(port) & ~(1 << irq));
+    }
+    else
+    {
+        outb(port, inb(port) | (1 << irq));
+    }
 }
 }

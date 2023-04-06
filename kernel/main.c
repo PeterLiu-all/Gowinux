@@ -10,8 +10,10 @@
 #include "lib/colors.h"
 #include "Gowinux/gdt.h"
 #include "Gowinux/idt.h"
+#include "Gowinux/clock.h"
 #include "lib/stack.h"
 #include "lib/task.h"
+#include "lib/stdlib.h"
 // static const int magic = GOWINUX_MAGIC;
 static char message[] = "Hello,\t\vGowinux!\n"; // .data
 static char buf[1024] = { 0 }; // .bss
@@ -46,6 +48,7 @@ void kernel_init()
     console_init();
     gdt_init();
     interrupt_init();
+    clock_init();
     // task_init();
     // set_style(WHITE);
     // // for(int i = 0; i < 100; i++)
@@ -59,14 +62,16 @@ void kernel_init()
     // task_end(&tsk1);
     // task_end(&tsk2);
     // printk("I'm back!\n");
-    INFO("Gowinux is NO.%d", 1);
-    size_t ret = 1;
-    __asm__ volatile(
-        "movl $1, %%eax\n\t"
-        "int $0x80\n\t"
-        :"=a"(ret)::"memory"
-    );
-    INFO("return val is %d", ret);
-    int a = 1/0;
+    // INFO("Gowinux is NO.%d", 1);
+    // size_t ret = 1;
+    // __asm__ volatile(
+    //     "movl $1, %%eax\n\t"
+    //     "int $0x80\n\t"
+    //     :"=a"(ret)::"memory"
+    // );
+    // INFO("return val is %d", ret);
+    // int a = 1/0;
+    size_t count = 100000000;
+    delay(count);
     return;
 }

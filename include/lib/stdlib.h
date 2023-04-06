@@ -28,7 +28,8 @@ inline void hang()
 #else
 #define delay(count) \
     do {             \
-    } while (--(size_t)count)
+    count--;  \
+    } while (count)
 #define hang()            \
     do {                  \
         __asm__ volatile( \

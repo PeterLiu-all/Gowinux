@@ -1,5 +1,6 @@
 #include "Gowinux/idt.h"
 #include "Gowinux/io.h"
+#include "Gowinux/clock.h"
 #include "lib/log.h"
 #include "lib/printk.h"
 
@@ -128,17 +129,6 @@ static void exception_handler(
     // 然后在下面 return 打断点，单步调试，找到出错的位置
     return;
 }
-// 通知中断控制器，中断处理结束
-void send_eoi(int vector)
-{
-    if (vector >= 0x20 && vector < 0x28) {
-        outb(PIC_M_CTRL, PIC_EOI);
-    }
-    if (vector >= 0x28 && vector < 0x30) {
-        outb(PIC_M_CTRL, PIC_EOI);
-        outb(PIC_S_CTRL, PIC_EOI);
-    }
-}
 
 static void outer_interrupt_default_handler(int vector)
 {
@@ -150,7 +140,8 @@ static void outer_interrupt_default_handler(int vector)
 // 所以0x80号会跳转到一个查表的函数里
 handler_t idt_table[IDT_SIZE] = {
     [0 ... 31] = exception_handler,
-    [32 ... 47] = outer_interrupt_default_handler,
+    [32] = clock_handler,
+    [33 ... 47] = outer_interrupt_default_handler,
     [48 ... 127] = interrupt_default_handler,
     [128] = syscall_handler,
     [129 ... IDT_TAIL] = interrupt_default_handler
