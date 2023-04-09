@@ -149,7 +149,7 @@ char* _ltoa(const long num, char* store, const int radix)
         ERROR("radix unknown!");
         return store;
     }
-    char stack[21] = { '\0' };
+    char stack[65] = { '\0' };
     char* esp = stack;
     char sym_table[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     long abs_val = num;
@@ -175,7 +175,7 @@ char* _ultoa(const long num, char* store, const int radix)
         ERROR("radix unknown!");
         return store;
     }
-    char stack[21] = { '\0' };
+    char stack[65] = { '\0' };
     char* esp = stack;
     char sym_table[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     long abs_val = num;
