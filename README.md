@@ -2,7 +2,7 @@
 
 自制的极度简易的OS内核~
 
-参考了https://github.com/StevenBaby/onix中的代码（还有他的教学视频）做的C++实现，我自认为在很多方面虽然和onix存在相似之处，但是许多实现思路都是不同的
+参考了[https://github.com/StevenBaby/onix](https://github.com/StevenBaby/onix)中的代码（还有他的教学视频）做的C++实现，我自认为在很多方面虽然和onix存在相似之处，但是许多实现思路都是不同的
 
 同时，为了兼容C语言，我的每一个头文件都是同时兼容C++和C语言的，暴露出来的是C风格的API，在源文件中尽量使用C++实现
 
